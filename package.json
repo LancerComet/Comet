@@ -1,0 +1,19 @@
+{
+  "name": "comet",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node ./lib/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@swc/cli": "^0.1.49",
+    "@swc/core": "^1.2.88"
+  },
+  "devDependencies": {
+    "@types/node": "^16.9.2"
+  }
+}
