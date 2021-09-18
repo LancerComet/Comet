@@ -1,6 +1,6 @@
 import * as swc from '@swc/core'
 
-interface ICometOption {
+interface ICometConfig {
   entry: string
   devServer: {
     host: string
@@ -11,5 +11,5 @@ interface ICometOption {
 }
 
 export {
-  ICometOption
+  ICometConfig
 }

@@ -1,5 +1,6 @@
 import { promises, stat } from 'fs'
 import path from 'path'
+
 const CWD_PATH = process.cwd()
 
 function readFileAsync (filePath: string) {
