@@ -12,6 +12,7 @@
   "dependencies": {
     "@swc/cli": "^0.1.49",
     "@swc/core": "^1.2.88",
+    "chokidar": "^3.5.2",
     "memfs": "^3.2.4",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.3"

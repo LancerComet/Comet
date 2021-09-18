@@ -1,14 +1,13 @@
 import http from 'http'
 import path from 'path'
 import * as swc from '@swc/core'
-import { isFileExistAsync, readFileAsync } from './modules/fs'
+import { watchFile } from './modules/file-watcher'
+import { getFileAbsolutePath, isFileExistAsync, readFileAsync } from './modules/fs'
 import { isMemFileExist, readMemFile, writeMemFile } from './modules/memfs'
 import { ICometOption } from './types'
 
-const CWD_PATH = process.cwd()
-
 const cometConfig: ICometOption = {
-  entry: path.resolve(CWD_PATH, './src/index.html'),
+  entry: path.resolve(process.cwd(), './src/index.html'),
   devServer: {
     host: '0.0.0.0',
     port: 8080
@@ -50,24 +49,29 @@ async function main () {
  */
 function createServer (host: string, port: number, entryHtml: string) {
   const server = http.createServer(async (req, res) => {
-    const path = req.url?.replace(/\?.+/, '')
+    const relativePath = '.' + (req.url?.replace(/\?.+/, '') ?? '')
 
-    if (path === '/' || path === '' || typeof path === 'undefined') {
+    if (relativePath === './' || relativePath === '.') {
       const indexFile = await readFileAsync(entryHtml)
       res.writeHead(200)
       res.end(indexFile)
       return
     }
 
-    if (!isMemFileExist(path)) {
-      const buildResult = await buildFile(path)
-      if (buildResult) {
-        writeMemFile(path, buildResult.contentType, buildResult.content)
+    const absoluteFilePath = await resolveFilePath(getFileAbsolutePath(relativePath))
+    if (!isMemFileExist(relativePath)) {
+      const build = async () => {
+        const buildResult = await buildFile(absoluteFilePath)
+        if (buildResult) {
+          writeMemFile(relativePath, buildResult.contentType, buildResult.content)
+        }
       }
+      watchFile(absoluteFilePath, build)
+      await build()
     }
 
-    if (isMemFileExist(path)) {
-      const file = readMemFile(path)!
+    if (isMemFileExist(relativePath)) {
+      const file = readMemFile(relativePath)!
       res.writeHead(200, {
         'Content-Type': file.contentType
       })
@@ -84,20 +88,7 @@ function createServer (host: string, port: number, entryHtml: string) {
   })
 }
 
-async function buildFile (fileUrl = '') {
-  let filePath = path.resolve(CWD_PATH, '.' + fileUrl)
-
-  if (!/\.\w+$/.test(fileUrl)) {
-    for (const extension of cometConfig.resolves) {
-      const newFileUrl = fileUrl + extension
-      const newFilePath = path.resolve(CWD_PATH, '.' + newFileUrl)
-      if (await isFileExistAsync(newFilePath)) {
-        filePath = newFilePath
-        break
-      }
-    }
-  }
-
+async function buildFile (filePath: string) {
   switch (true) {
     case /\.tsx?$/.test(filePath): {
       const fileContent = await buildTsFile(filePath)
@@ -113,7 +104,19 @@ async function buildFile (fileUrl = '') {
   }
 }
 
-async function buildTsFile (filepath = '') {
+async function resolveFilePath (filePath: string): Promise<string> {
+  if (!/\.\w+$/.test(filePath)) {
+    for (const extension of cometConfig.resolves) {
+      const newFilePath = filePath + extension
+      if (await isFileExistAsync(newFilePath)) {
+        return newFilePath
+      }
+    }
+  }
+  return filePath
+}
+
+async function buildTsFile (filepath: string): Promise<string> {
   const fileContent = await readFileAsync(filepath)
   const output = await swc.transform(fileContent, cometConfig.swcConfig)
   return output.code

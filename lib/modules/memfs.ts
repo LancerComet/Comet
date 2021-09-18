@@ -5,16 +5,19 @@ interface IMemFileItem {
 
 const FILE_CACHE: { [filePath: string]: IMemFileItem } = {}
 
-const readMemFile = (filePath: string): IMemFileItem | undefined => {
+function readMemFile (filePath: string): IMemFileItem | undefined {
   return FILE_CACHE[filePath]
 }
 
-const writeMemFile = (filePath: string, contentType: string, content: string) => {
+function writeMemFile (filePath: string, contentType: string, content: string) {
   if (!isMemFileExist(filePath)) {
     FILE_CACHE[filePath] = {
       contentType,
       content
     }
+  } else {
+    FILE_CACHE[filePath].contentType = contentType
+    FILE_CACHE[filePath].content = content
   }
 }
 
