@@ -15,6 +15,8 @@ function isFileExistAsync (filePath: string) {
       if (!error && stats) {
         const isExist = stats.isFile()
         resolve(isExist)
+      } else {
+        resolve(false)
       }
     })
   })

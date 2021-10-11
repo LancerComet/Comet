@@ -1,6 +1,4 @@
 import http from 'http'
-import * as swc from '@swc/core'
-import { Options } from '@swc/core'
 import { ICometConfig } from '../types'
 import { watchFile } from './file-watcher'
 import { getFileAbsolutePath, isFileExistAsync, readFileAsync } from './fs'
@@ -23,16 +21,28 @@ function createServer (cometConfig: ICometConfig) {
       cometConfig.resolves
     )
 
-    if (!isMemFileExist(relativePath)) {
-      const build = async () => {
-        const buildResult = await buildFile(absoluteFilePath, cometConfig)
-        if (buildResult) {
-          writeMemFile(relativePath, buildResult.contentType, buildResult.content)
+    if (await isFileExistAsync(absoluteFilePath)) {
+      const buildFile = async () => {
+        const plugins = cometConfig.plugins ?? []
+        const filePath = absoluteFilePath
+        const fileContent = await readFileAsync(filePath)
+
+        for (const plugin of plugins) {
+          const buildResult = await plugin({
+            filePath,
+            fileContent
+          })
+
+          if (buildResult !== null) {
+            writeMemFile(relativePath, buildResult.contentType, buildResult.content)
+            console.log('File build complete:', absoluteFilePath)
+            break
+          }
         }
-        console.log('File build complete:', absoluteFilePath)
       }
-      watchFile(absoluteFilePath, build)
-      await build()
+
+      watchFile(absoluteFilePath, buildFile)
+      await buildFile()
     }
 
     if (isMemFileExist(relativePath)) {
@@ -56,28 +66,6 @@ function createServer (cometConfig: ICometConfig) {
 
 export {
   createServer
-}
-
-async function buildFile (filePath: string, cometConfig: ICometConfig) {
-  switch (true) {
-    case /\.tsx?$/.test(filePath): {
-      const fileContent = await buildTsFile(filePath, cometConfig.swcConfig)
-      return {
-        contentType: 'text/javascript',
-        content: fileContent
-      }
-    }
-
-    default: {
-      return null
-    }
-  }
-}
-
-async function buildTsFile (filepath: string, swcConfig: Options): Promise<string> {
-  const fileContent = await readFileAsync(filepath)
-  const output = await swc.transform(fileContent, swcConfig)
-  return output.code
 }
 
 async function resolveFilePath (
