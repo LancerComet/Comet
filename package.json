@@ -10,8 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@swc/cli": "^0.1.49",
-    "@swc/core": "^1.2.88",
     "@types/node": "^16.9.2",
     "chokidar": "^3.5.2",
     "dayjs": "^1.10.7",
@@ -21,6 +19,9 @@
     "ws": "^8.2.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@swc/cli": "^0.1.49",
+    "@swc/core": "^1.2.88",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "eslint": "^7.32.0",
