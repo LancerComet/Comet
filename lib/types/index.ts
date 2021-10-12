@@ -4,6 +4,8 @@ import { Stream } from 'stream'
  * 插件上下文对象.
  */
 interface ICometPluginContext {
+  mode: 'dev' | 'build'
+
   /**
    * 文件请求 URL.
    *

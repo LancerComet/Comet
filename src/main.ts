@@ -1,10 +1,14 @@
+/* eslint-disable */
 import './index.css'
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import img from './assets/image.jpg'
+// @ts-ignore
+import json from './index.json'
+
 import { makeDoge } from './modules/doge'
 
+console.log(json)
 main()
 
 function main () {

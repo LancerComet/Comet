@@ -2,6 +2,7 @@ import path from 'path'
 import { createDevServer } from './modules/dev-server'
 import { CssPlugin } from './plugins/css'
 import { ImagePlugin } from './plugins/image'
+import { JsonPlugin } from './plugins/json'
 import { TypescriptPlugin } from './plugins/typescript'
 import { ICometConfig } from './types'
 
@@ -32,10 +33,9 @@ async function main () {
           }
         }
       }),
-
       CssPlugin(),
-
-      ImagePlugin()
+      ImagePlugin(),
+      JsonPlugin()
     ]
   }
 

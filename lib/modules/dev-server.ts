@@ -28,6 +28,7 @@ function createDevServer (cometConfig: ICometConfig) {
 
         for (const plugin of plugins) {
           const buildResult = await plugin({
+            mode: 'dev',
             fileUrl,
             filePath
           })
