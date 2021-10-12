@@ -1,11 +1,26 @@
+import { Stream } from 'stream'
+
+/**
+ * 插件上下文对象.
+ */
 interface ICometPluginContext {
+  /**
+   * 文件请求 URL.
+   *
+   * @example /my-awesome-photo.png
+   */
+  fileUrl: string
+
+  /**
+   * 文件的本机路径.
+   * @example C:\my-project\src\assets\my-awesome-photo.png
+   */
   filePath: string
-  fileContent: string
 }
 
 interface ICometPluginOutput {
-  contentType: string
-  content: string
+  contentType?: string
+  content: string | Stream
 }
 
 type CometPlugin = (context: ICometPluginContext) => Promise<ICometPluginOutput | null>

@@ -1,6 +1,7 @@
 import path from 'path'
-import { createServer } from './modules/http-server'
+import { createDevServer } from './modules/dev-server'
 import { CssPlugin } from './plugins/css'
+import { ImagePlugin } from './plugins/image'
 import { TypescriptPlugin } from './plugins/typescript'
 import { ICometConfig } from './types'
 
@@ -32,9 +33,11 @@ async function main () {
         }
       }),
 
-      CssPlugin()
+      CssPlugin(),
+
+      ImagePlugin()
     ]
   }
 
-  createServer(cometConfig)
+  createDevServer(cometConfig)
 }

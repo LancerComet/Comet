@@ -1,12 +1,18 @@
-import { promises, stat } from 'fs'
+import { promises, stat, createReadStream } from 'fs'
 import path from 'path'
 
 const CWD_PATH = process.cwd()
 
-function readFileAsync (filePath: string) {
+function readFileAsTextAsync (filePath: string) {
   return promises.readFile(filePath, {
     encoding: 'utf-8'
   })
+}
+
+function readFileAsStream (filePath: string) {
+  const readStream = createReadStream(filePath)
+  readStream.setEncoding('utf-8')
+  return readStream
 }
 
 function isFileExistAsync (filePath: string) {
@@ -27,7 +33,8 @@ function getFileAbsolutePath (relativePath: string): string {
 }
 
 export {
-  readFileAsync,
+  readFileAsTextAsync,
+  readFileAsStream,
   isFileExistAsync,
   getFileAbsolutePath
 }

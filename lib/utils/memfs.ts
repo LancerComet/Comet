@@ -1,6 +1,8 @@
+import { Stream } from 'stream'
+
 interface IMemFileItem {
   contentType: string
-  content: string
+  content: string | Stream
 }
 
 const FILE_CACHE: { [filePath: string]: IMemFileItem } = {}
@@ -9,7 +11,7 @@ function readMemFile (filePath: string): IMemFileItem | undefined {
   return FILE_CACHE[filePath]
 }
 
-function writeMemFile (filePath: string, contentType: string, content: string) {
+function writeMemFile (filePath: string, contentType: string, content: string | Stream) {
   if (!isMemFileExist(filePath)) {
     FILE_CACHE[filePath] = {
       contentType,
