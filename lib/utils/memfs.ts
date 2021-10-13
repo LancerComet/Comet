@@ -1,29 +1,39 @@
-import { Stream } from 'stream'
-
 interface IMemFileItem {
+  filePath: string
   contentType: string
-  content: string | Stream
+  content?: string
 }
 
-const FILE_CACHE: { [filePath: string]: IMemFileItem } = {}
+const FILE_CACHE: { [id: string]: IMemFileItem } = {}
 
-function readMemFile (filePath: string): IMemFileItem | undefined {
-  return FILE_CACHE[filePath]
+function readMemFile (id: string): IMemFileItem | undefined {
+  return FILE_CACHE[id]
 }
 
-function writeMemFile (filePath: string, contentType: string, content: string | Stream) {
-  if (!isMemFileExist(filePath)) {
-    FILE_CACHE[filePath] = {
-      contentType,
-      content
-    }
-  } else {
-    FILE_CACHE[filePath].contentType = contentType
-    FILE_CACHE[filePath].content = content
+/**
+ * Add memory file.
+ *
+ * @param id The ID to indicate this file.
+ * @param filePath The real file path.
+ * @param contentType Content type of this file.
+ * @param content The text content of this file. Undefined is allowed.
+ */
+function writeMemFile (
+  id: string,
+  filePath: string,
+  contentType: string,
+  content?: string
+) {
+  FILE_CACHE[id] = {
+    filePath,
+    contentType,
+    content
   }
 }
 
-const isMemFileExist = (filePath: string) => typeof FILE_CACHE[filePath] !== 'undefined'
+const isMemFileExist = (id: string) => {
+  return typeof FILE_CACHE[id] !== 'undefined'
+}
 
 export {
   readMemFile,

@@ -1,7 +1,7 @@
 import crypto, { BinaryLike } from 'crypto'
-import { createReadStream } from 'fs'
 
 import { CometPlugin } from '../types'
+import { readFileAsBuffer } from '../utils/fs'
 import { isMemFileExist, writeMemFile } from '../utils/memfs'
 
 const FILE_REGEXP = /\.(jpe?g|png|gif|bmp)$/
@@ -15,15 +15,14 @@ const ImagePlugin = (): CometPlugin => {
     }
 
     const ext = filePath.match(EXT_REGEXP)?.[0] ?? ''
-    const hash = `${hashContent(filePath)}${ext}`
-    if (!isMemFileExist(hash)) {
-      const stream = createReadStream(filePath)
-      const contentType = getContentType(filePath)
-      writeMemFile(`./${hash}`, contentType, stream)
+    const imageId = `${hashContent(filePath)}${ext}`
+    const imagePath = `./${imageId}`
+    if (!isMemFileExist(imagePath)) {
+      const contentType = await getContentType(filePath)
+      writeMemFile(imagePath, filePath, contentType)
     }
 
-    const content = `export default '${hash}'`
-
+    const content = `export default '${imageId}'`
     return {
       content
     }
@@ -34,24 +33,30 @@ export {
   ImagePlugin
 }
 
-function getContentType (filePath: string): string {
-  if (filePath.endsWith('jpg') || filePath.endsWith('jpeg')) {
-    return 'image/jpeg'
+async function getContentType (filePath: string): Promise<string> {
+  const fileBuffer = await readFileAsBuffer(filePath)
+  let header = ''
+  for (let i = 0; i < 4; i++) {
+    header += fileBuffer[i].toString(16)
   }
 
-  if (filePath.endsWith('png')) {
-    return 'image/png'
-  }
+  switch (header) {
+    case '89504e47':
+      return 'image/png'
 
-  if (filePath.endsWith('gif')) {
-    return 'image/gif'
-  }
+    case '47494638':
+      return 'image/gif'
 
-  if (filePath.endsWith('bmp')) {
-    return 'image/bmp'
-  }
+    case 'ffd8ffe0':
+    case 'ffd8ffe1':
+    case 'ffd8ffe2':
+    case 'ffd8ffe3':
+    case 'ffd8ffe8':
+      return 'image/jpeg'
 
-  return 'application/octet-stream'
+    default:
+      return 'application/octet-stream'
+  }
 }
 
 function hashContent (content: string | BinaryLike): string {

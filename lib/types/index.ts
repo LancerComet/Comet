@@ -1,5 +1,3 @@
-import { Stream } from 'stream'
-
 /**
  * 插件上下文对象.
  */
@@ -22,7 +20,7 @@ interface ICometPluginContext {
 
 interface ICometPluginOutput {
   contentType?: string
-  content: string | Stream
+  content: string
 }
 
 type CometPlugin = (context: ICometPluginContext) => Promise<ICometPluginOutput | null>
