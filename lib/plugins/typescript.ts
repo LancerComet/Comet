@@ -1,4 +1,5 @@
 import * as swc from '@swc/core'
+
 import { CometPlugin } from '../types'
 import { readFileAsTextAsync } from '../utils/fs'
 

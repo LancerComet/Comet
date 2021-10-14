@@ -1,8 +1,8 @@
 import crypto, { BinaryLike } from 'crypto'
 
+import { isMemFileExist, writeMemFile } from '../modules/dev-server/memfs'
 import { CometPlugin } from '../types'
 import { readFileAsBuffer } from '../utils/fs'
-import { isMemFileExist, writeMemFile } from '../utils/memfs'
 
 const FILE_REGEXP = /\.(jpe?g|png|gif|bmp)$/
 const EXT_REGEXP = /\.[0-9a-z]+$/i

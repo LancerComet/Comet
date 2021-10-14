@@ -1,10 +1,10 @@
 import { createReadStream } from 'fs'
 import http, { IncomingMessage, ServerResponse } from 'http'
-import { ICometConfig } from '../types'
-import { watchFile } from '../utils/file-watcher'
-import { getFileAbsolutePath, isFileExistAsync, readFileAsTextAsync } from '../utils/fs'
-import { isMemFileExist, readMemFile, writeMemFile } from '../utils/memfs'
-import { resolveFilePath } from '../utils/path'
+import { ICometConfig } from '../../types'
+import { watchFile } from '../../utils/file-watcher'
+import { getFileAbsolutePath, isFileExistAsync, readFileAsTextAsync } from '../../utils/fs'
+import { resolveFilePath } from '../../utils/path'
+import { isMemFileExist, readMemFile, writeMemFile } from './memfs'
 
 function createDevServer (cometConfig: ICometConfig) {
   const server = http.createServer(async (req, res) => {

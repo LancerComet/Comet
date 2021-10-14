@@ -1,13 +1,12 @@
-/* eslint-disable */
+import dayjs from 'dayjs'
+
 import './index.css'
 
-// @ts-ignore
 import img from './assets/image.jpg'
-// @ts-ignore
 import json from './index.json'
-
 import { makeDoge } from './modules/doge'
 
+console.log(dayjs())
 console.log(json)
 main()
 
