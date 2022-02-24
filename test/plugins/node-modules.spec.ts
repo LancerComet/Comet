@@ -6,7 +6,7 @@ describe('Typescript Plugin test.', () => {
       import aa from "aa/a"
       import a, { ab } from 'x3x4a.jpg'
       import { ab }, a from '12xx/a_a.jpg'
-      import a from '@bilibili-firebird/a'
+      import a from '@some-scope/a'
       import v from 'vue.a'
 
       import aa from '../../aaa'
@@ -18,7 +18,7 @@ describe('Typescript Plugin test.', () => {
       import aa from '/node_modules/aa/a'
       import a, { ab } from '/node_modules/x3x4a.jpg'
       import { ab }, a from '/node_modules/12xx/a_a.jpg'
-      import a from '/node_modules/@bilibili-firebird/a'
+      import a from '/node_modules/@some-scope/a'
       import v from '/node_modules/vue.a'
 
       import aa from '../../aaa'
